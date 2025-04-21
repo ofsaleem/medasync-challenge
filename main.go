@@ -11,7 +11,7 @@ import (
 type History struct {
 	in         time.Time
 	out        time.Time
-	procedures int
+	procedures map[string]int
 }
 
 func main() {
@@ -60,7 +60,7 @@ func main() {
 					fmt.Println("Error, patient ", chunks[2], " not in database")
 					os.Exit(1)
 				}
-				patient.procedures += 1
+				patient.procedures[chunks[4]] += 1
 				patients[chunks[2]] = patient
 			}
 		}
