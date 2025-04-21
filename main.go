@@ -47,7 +47,21 @@ func main() {
 				patient.in = parseTime(chunks[3])
 				patients[chunks[2]] = patient
 			case "Discharge":
+				patient, ok := patients[chunks[2]]
+				if !ok {
+					fmt.Println("Error, patient ", chunks[2], " not in database")
+					os.Exit(1)
+				}
+				patient.out = parseTime(chunks[3])
+				patients[chunks[2]] = patient
 			case "Treatment":
+				patient, ok := patients[chunks[2]]
+				if !ok {
+					fmt.Println("Error, patient ", chunks[2], " not in database")
+					os.Exit(1)
+				}
+				patient.procedures += 1
+				patients[chunks[2]] = patient
 			}
 		}
 	}
