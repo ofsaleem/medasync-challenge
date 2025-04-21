@@ -4,6 +4,7 @@ import (
 	"os"
 	"bufio"
 	"time"
+	"strings"
 )
 
 type History struct {
@@ -29,6 +30,20 @@ func main() {
 
 	patients := make(map[string]History)
 	scanner := bufio.NewScanner(file)
-
-	
+	for scanner.Scan() {
+		chunks := strings.Split(scanner.Text(), " ")
+		switch chunks[0] {
+			case "Patient":
+				patients[chunks[0]] = History{}
+			case "Action":
+				switch chunks[1] {
+					case "Intake":
+					case "Discharge":
+					case "Treatment":			
+			}
+		}
+	}
+	if scanner.Err() != nil {
+		panic(scanner.Err())
+	}
 }
