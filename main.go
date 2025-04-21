@@ -38,6 +38,11 @@ func main() {
 			case "Action":
 				switch chunks[1] {
 					case "Intake":
+					patient, ok := patients[chunks[0]]
+					if !ok {
+						fmt.Println("Error: patient ", chunks[0], " not in database")
+						os.Exit(1)
+					}
 					case "Discharge":
 					case "Treatment":			
 			}
@@ -46,4 +51,13 @@ func main() {
 	if scanner.Err() != nil {
 		panic(scanner.Err())
 	}
+}
+
+func parseTime(input string) time.Time {
+	layout := "2006-01-02T15:04:05Z"
+	out, err := time.Parse(layout, input)
+	if err != nil {
+		panic(err)
+	}
+	return out
 }
