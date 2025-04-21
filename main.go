@@ -33,15 +33,17 @@ func main() {
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		chunks := strings.Split(scanner.Text(), " ")
+		fmt.Println(chunks)
 		switch chunks[0] {
 		case "Patient":
-			patients[chunks[0]] = History{}
+			m := make(map[string]int)
+			patients[chunks[1]] = History{procedures: m}
 		case "Action":
 			switch chunks[1] {
 			case "Intake":
 				patient, ok := patients[chunks[2]]
 				if !ok {
-					fmt.Println("Error: patient ", chunks[2], " not in database")
+					fmt.Println("Error: patient", chunks[2], "not in database")
 					os.Exit(1)
 				}
 				patient.in = parseTime(chunks[3])
@@ -49,7 +51,7 @@ func main() {
 			case "Discharge":
 				patient, ok := patients[chunks[2]]
 				if !ok {
-					fmt.Println("Error, patient ", chunks[2], " not in database")
+					fmt.Println("Error, patient", chunks[2], "not in database")
 					os.Exit(1)
 				}
 				patient.out = parseTime(chunks[3])
@@ -57,7 +59,7 @@ func main() {
 			case "Treatment":
 				patient, ok := patients[chunks[2]]
 				if !ok {
-					fmt.Println("Error, patient ", chunks[2], " not in database")
+					fmt.Println("Error, patient", chunks[2], "not in database")
 					os.Exit(1)
 				}
 				patient.procedures[chunks[4]] += 1
