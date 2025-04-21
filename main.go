@@ -3,7 +3,14 @@ import (
 	"fmt"
 	"os"
 	"bufio"
+	"time"
 )
+
+type History struct {
+	in time.Time
+	out time.Time
+	procedures int
+}
 
 func main() {
 	// must provide filename on command line
@@ -17,5 +24,11 @@ func main() {
 		panic(err)
 	}
 	
+	// close the file when we're done
+	defer file.Close()
 
+	patients := make(map[string]History)
+	scanner := bufio.NewScanner(file)
+
+	
 }
