@@ -1,15 +1,16 @@
 package main
+
 import (
+	"bufio"
 	"fmt"
 	"os"
-	"bufio"
-	"time"
 	"strings"
+	"time"
 )
 
 type History struct {
-	in time.Time
-	out time.Time
+	in         time.Time
+	out        time.Time
 	procedures int
 }
 
@@ -24,7 +25,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	
+
 	// close the file when we're done
 	defer file.Close()
 
@@ -33,18 +34,20 @@ func main() {
 	for scanner.Scan() {
 		chunks := strings.Split(scanner.Text(), " ")
 		switch chunks[0] {
-			case "Patient":
-				patients[chunks[0]] = History{}
-			case "Action":
-				switch chunks[1] {
-					case "Intake":
-					patient, ok := patients[chunks[0]]
-					if !ok {
-						fmt.Println("Error: patient ", chunks[0], " not in database")
-						os.Exit(1)
-					}
-					case "Discharge":
-					case "Treatment":			
+		case "Patient":
+			patients[chunks[0]] = History{}
+		case "Action":
+			switch chunks[1] {
+			case "Intake":
+				patient, ok := patients[chunks[2]]
+				if !ok {
+					fmt.Println("Error: patient ", chunks[2], " not in database")
+					os.Exit(1)
+				}
+				patient.in = parseTime(chunks[3])
+				patients[chunks[2]] = patient
+			case "Discharge":
+			case "Treatment":
 			}
 		}
 	}
