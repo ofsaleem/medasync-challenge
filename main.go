@@ -33,7 +33,6 @@ func main() {
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		chunks := strings.Split(scanner.Text(), " ")
-		fmt.Println(chunks)
 		switch chunks[0] {
 		case "Patient":
 			m := make(map[string]int)
