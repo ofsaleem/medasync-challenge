@@ -120,23 +120,23 @@ func parseDur(duration time.Duration) string {
 	}
 	output := []string{}
 	if years > 0 {
-		str := fmt.Sprintf("%d, ", years)
+		str := fmt.Sprintf("%d years", years)
 		output = append(output, str)
 	}
 	if days > 0 {
-		str := fmt.Sprintf("%d, ", days)
+		str := fmt.Sprintf("%d days", days)
 		output = append(output, str)
 	}
 	if hours > 0 {
-		str := fmt.Sprintf("%d, ", hours)
+		str := fmt.Sprintf("%d hours", hours)
 		output = append(output, str)
 	}
 	if minutes > 0 {
-		str := fmt.Sprintf("%d, ", minutes)
+		str := fmt.Sprintf("%d minutes", minutes)
 		output = append(output, str)
 	}
 	if remainder > 0 {
-		str := fmt.Sprintf("%d, ", remainder)
+		str := fmt.Sprintf("%d seconds", remainder)
 		output = append(output, str)
 	}
 	if len(output) == 0 {
@@ -147,9 +147,12 @@ func parseDur(duration time.Duration) string {
 		return output[0]
 	}
 	outputStr := output[0]
-	for idx := 1; idx < len(output)-2; idx++ {
+	for idx := 1; idx <= len(output)-2; idx++ {
 		outputStr += ", " + output[idx]
 	}
-	outputStr += ", and " + output[len(output)-1]
+	if len(output) > 2 {
+		outputStr += ","
+	}
+	outputStr += " and " + output[len(output)-1]
 	return outputStr
 }
