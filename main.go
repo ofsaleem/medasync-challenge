@@ -77,12 +77,7 @@ func main() {
 	file.Close()
 
 	// do our output prints
-	if upgrade {
-		processUpgrade(patients)
-	} else {
-		process(patients)
-	}
-
+	process(patients, upgrade)
 }
 
 func parseTime(input string) time.Time {
@@ -94,27 +89,22 @@ func parseTime(input string) time.Time {
 	return out
 }
 
-func process(patients map[string]History) {
-	for patient, history := range patients {
-		procedures := len(history.procedures)
-		duration := history.out.Sub(history.in)
-		hours := int(duration.Hours())
-		minutes := float64(duration/time.Minute) - float64(hours*60)
-		output := fmt.Sprintf("Patient %s stayed for %d.0 hours and %.1f minutes and received %d treatments", patient, hours, minutes, procedures)
-		fmt.Println(output)
-	}
-}
-
-func processUpgrade(patients map[string]History) {
+func process(patients map[string]History, upgrade bool) {
 	for patient, history := range patients {
 		procedures := len(history.procedures)
 		duration := history.out.Sub(history.in)
 		output := "Patient " + patient + " stayed for "
-		output += parseDur(duration)
-		if procedures == 1 {
-			output += fmt.Sprintf(" and had 1 procedure.")
+		if !upgrade {
+			hours := int(duration.Hours())
+			minutes := float64(duration/time.Minute) - float64(hours*60)
+			output += fmt.Sprintf("%d.0 hours and %.1f minutes and received %d treatments", hours, minutes, procedures)
 		} else {
-			output += fmt.Sprintf(" and had %d procedures.", procedures)
+			output += parseDur(duration)
+			if procedures == 1 {
+				output += fmt.Sprintf(" and had 1 procedure.")
+			} else {
+				output += fmt.Sprintf(" and had %d procedures.", procedures)
+			}
 		}
 		fmt.Println(output)
 	}
