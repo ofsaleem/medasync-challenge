@@ -147,9 +147,9 @@ func parseDur(duration time.Duration) string {
 		return output[0]
 	}
 	outputStr := output[0]
-	for idx := 1; idx < len(output) - 2; idx++{
+	for idx := 1; idx < len(output)-2; idx++ {
 		outputStr += ", " + output[idx]
 	}
-	outputStr += ", and " + output[len(output) - 1]
+	outputStr += ", and " + output[len(output)-1]
 	return outputStr
 }
