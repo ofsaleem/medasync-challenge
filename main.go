@@ -26,9 +26,6 @@ func main() {
 		panic(err)
 	}
 
-	// close the file when we're done
-	defer file.Close()
-
 	patients := make(map[string]History)
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
@@ -69,6 +66,12 @@ func main() {
 	if scanner.Err() != nil {
 		panic(scanner.Err())
 	}
+	// close the file when we're done
+	file.Close()
+
+	// do our output prints
+	process(patients)
+
 }
 
 func parseTime(input string) time.Time {
@@ -78,4 +81,75 @@ func parseTime(input string) time.Time {
 		panic(err)
 	}
 	return out
+}
+
+func process(patients map[string]History) {
+	for patient, history := range patients {
+		procedures := len(history.procedures)
+		duration := history.out.Sub(history.in)
+		output := "Patient " + patient + " stayed for "
+		output += parseDur(duration)
+		output += fmt.Sprintf(" and had %d procedures.", procedures)
+		fmt.Println(output)
+	}
+}
+
+func parseDur(duration time.Duration) string {
+	var years, days, hours, minutes int
+	const secondsInAYear int = 60 * 60 * 24 * 365
+	const secondsInADay int = 60 * 60 * 24
+	const secondsInAnHour int = 60 * 60
+	const secondsInAMinute int = 60
+	seconds := int(duration.Seconds())
+	remainder := seconds
+	if seconds >= secondsInAYear {
+		years = seconds / secondsInAYear
+		remainder = seconds % secondsInAYear
+	}
+	if remainder >= secondsInADay {
+		days = remainder / secondsInADay
+		remainder %= secondsInADay
+	}
+	if remainder >= secondsInAnHour {
+		hours = remainder / secondsInAnHour
+		remainder %= secondsInAnHour
+	}
+	if remainder >= secondsInAMinute {
+		minutes = remainder / secondsInAMinute
+		remainder %= secondsInAMinute
+	}
+	output := []string{}
+	if years > 0 {
+		str := fmt.Sprintf("%d, ", years)
+		output = append(output, str)
+	}
+	if days > 0 {
+		str := fmt.Sprintf("%d, ", days)
+		output = append(output, str)
+	}
+	if hours > 0 {
+		str := fmt.Sprintf("%d, ", hours)
+		output = append(output, str)
+	}
+	if minutes > 0 {
+		str := fmt.Sprintf("%d, ", minutes)
+		output = append(output, str)
+	}
+	if remainder > 0 {
+		str := fmt.Sprintf("%d, ", remainder)
+		output = append(output, str)
+	}
+	if len(output) == 0 {
+		fmt.Println("exiting, patient had a 0 time duration stay")
+		os.Exit(1)
+	}
+	if len(output) == 1 {
+		return output[0]
+	}
+	outputStr := output[0]
+	for idx := 1; idx < len(output) - 2; idx++{
+		outputStr += ", " + output[idx]
+	}
+	outputStr += ", and " + output[len(output) - 1]
+	return outputStr
 }
