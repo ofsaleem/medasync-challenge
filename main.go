@@ -15,13 +15,20 @@ type History struct {
 }
 
 func main() {
+	arguments := len(os.Args)
+	upgrade := false
 	// must provide filename on command line
-	if len(os.Args) < 2 {
+	if arguments < 2 || (arguments == 2 && os.Args[1] == "--upgrade-output") {
 		fmt.Println("Error: provide filename")
 		os.Exit(1)
 	}
+	if arguments == 3 {
+		if os.Args[1] == "--upgrade-output" {
+			upgrade = true
+		}
+	}
 	// try to open file
-	file, err := os.Open(os.Args[1])
+	file, err := os.Open(os.Args[arguments-1])
 	if err != nil {
 		panic(err)
 	}
@@ -70,7 +77,11 @@ func main() {
 	file.Close()
 
 	// do our output prints
-	process(patients)
+	if upgrade {
+		processUpgrade(patients)
+	} else {
+		process(patients)
+	}
 
 }
 
@@ -84,6 +95,17 @@ func parseTime(input string) time.Time {
 }
 
 func process(patients map[string]History) {
+	for patient, history := range patients {
+		procedures := len(history.procedures)
+		duration := history.out.Sub(history.in)
+		hours := int(duration.Hours())
+		minutes := float64(duration / time.Minute) - float64(hours * 60)
+		output := fmt.Sprintf("Patient %s stayed for %d.0 hours and %.1f minutes and received %d treatments", patient, hours, minutes, procedures)
+		fmt.Println(output)
+	}
+}
+
+func processUpgrade(patients map[string]History) {
 	for patient, history := range patients {
 		procedures := len(history.procedures)
 		duration := history.out.Sub(history.in)
