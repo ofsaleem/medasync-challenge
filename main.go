@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	"os"
 	"strings"
@@ -15,26 +16,34 @@ type History struct {
 }
 
 func main() {
-	arguments := len(os.Args)
-	upgrade := false
-	// must provide filename on command line
-	if arguments < 2 || (arguments == 2 && os.Args[1] == "--upgrade-output") {
-		fmt.Println("Error: provide filename")
-		os.Exit(1)
-	}
-	if arguments == 3 {
-		if os.Args[1] == "--upgrade-output" {
-			upgrade = true
+	upgradePtr := flag.Bool("upgrade", false, "output with more, prettier, detail")
+	fileNamePtr := flag.String("f", "", "file path to read")
+	fileProvided := false
+	var scanner *bufio.Scanner
+	flag.Parse()
+	flag.Visit(func(f *flag.Flag) {
+		if f.Name == "f" {
+			if *fileNamePtr == "" {
+				fmt.Println("Error: provide filename")
+				os.Exit(1)
+			}
+			fileProvided = true
 		}
-	}
-	// try to open file
-	file, err := os.Open(os.Args[arguments-1])
-	if err != nil {
-		panic(err)
+	})
+
+	if fileProvided {
+		// try to open file
+		file, err := os.Open(*fileNamePtr)
+		if err != nil {
+			panic(err)
+		}
+		scanner = bufio.NewScanner(file)
+		defer file.Close()
+	} else {
+		scanner = bufio.NewScanner(os.Stdin)
 	}
 
 	patients := make(map[string]History)
-	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		chunks := strings.Split(scanner.Text(), " ")
 		switch chunks[0] {
@@ -73,11 +82,8 @@ func main() {
 	if scanner.Err() != nil {
 		panic(scanner.Err())
 	}
-	// close the file when we're done
-	file.Close()
-
 	// do our output prints
-	process(patients, upgrade)
+	process(patients, *upgradePtr)
 }
 
 func parseTime(input string) time.Time {
