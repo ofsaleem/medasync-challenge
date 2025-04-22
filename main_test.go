@@ -2,6 +2,7 @@ package medasyncchallenge
 
 import (
 	"bufio"
+	"fmt"
 	"strings"
 	"testing"
 	"time"
@@ -25,14 +26,15 @@ func TestScanInput(t *testing.T) {
 	}
 
 	input := `Patient Omar
-	Action Intake Omar 1992-01-29T19:00:00Z
-	Action Discharge Omar 2025-04-22T00:32:00Z
-	Action Treatment Omar 2000-01-01T10:00:00Z XXXY
-	Action Treatment Omar 2005-04-02T11:04:43Z XXXY
-	Action Treatment Omar 2010-09-09T09:09:09Z XYXY
-	Action Treatment Omar 2020-11-11T11:11:11Z ZZZZ`
+Action Intake Omar 1992-01-29T19:00:00Z
+Action Discharge Omar 2025-04-22T00:32:00Z
+Action Treatment Omar 2000-01-01T10:00:00Z XXXY
+Action Treatment Omar 2005-04-02T11:04:43Z XXXY
+Action Treatment Omar 2010-09-09T09:09:09Z XYXY
+Action Treatment Omar 2020-11-11T11:11:11Z ZZZZ`
 	reader := bufio.NewScanner(strings.NewReader(input))
 	testOutput := scanInput(reader)
+	fmt.Println(testOutput)
 	if val, ok := testOutput["Omar"]; !ok {
 		t.Errorf("Patient Omar not in database")
 	} else {
