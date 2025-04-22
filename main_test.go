@@ -2,7 +2,8 @@ package medasyncchallenge
 
 import (
 	"bufio"
-	"fmt"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 	"time"
@@ -34,7 +35,6 @@ Action Treatment Omar 2010-09-09T09:09:09Z XYXY
 Action Treatment Omar 2020-11-11T11:11:11Z ZZZZ`
 	reader := bufio.NewScanner(strings.NewReader(input))
 	testOutput := scanInput(reader)
-	fmt.Println(testOutput)
 	if val, ok := testOutput["Omar"]; !ok {
 		t.Errorf("Patient Omar not in database")
 	} else {
@@ -48,4 +48,22 @@ Action Treatment Omar 2020-11-11T11:11:11Z ZZZZ`
 			t.Errorf("Omar's procedure count was wrong: expected %d, got %d", len(answer["Omar"].procedures), len(val.procedures))
 		}
 	}
+	path := filepath.Join("testdata", "omartest.txt")
+	file,_ := os.Open(path)
+	reader = bufio.NewScanner(file)
+	testOutput = scanInput(reader)
+	if val, ok := testOutput["Omar"]; !ok {
+		t.Errorf("Patient Omar not in database")
+	} else {
+		if val.in != answer["Omar"].in {
+			t.Errorf("Omar's intake was wrong: expected %s, got %s", answer["Omar"].in, val.in)
+		}
+		if val.out != answer["Omar"].out {
+			t.Errorf("Omar's discharge was wrong: expected %s, got %s", answer["Omar"].out, val.out)
+		}
+		if len(val.procedures) != len(answer["Omar"].procedures) {
+			t.Errorf("Omar's procedure count was wrong: expected %d, got %d", len(answer["Omar"].procedures), len(val.procedures))
+		}
+	}
+	file.Close()
 }
