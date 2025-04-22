@@ -33,6 +33,7 @@ Action Treatment Omar 2000-01-01T10:00:00Z XXXY
 Action Treatment Omar 2005-04-02T11:04:43Z XXXY
 Action Treatment Omar 2010-09-09T09:09:09Z XYXY
 Action Treatment Omar 2020-11-11T11:11:11Z ZZZZ`
+	// test stdin
 	reader := bufio.NewScanner(strings.NewReader(input))
 	testOutput := scanInput(reader)
 	if val, ok := testOutput["Omar"]; !ok {
@@ -48,6 +49,7 @@ Action Treatment Omar 2020-11-11T11:11:11Z ZZZZ`
 			t.Errorf("Omar's procedure count was wrong: expected %d, got %d", len(answer["Omar"].procedures), len(val.procedures))
 		}
 	}
+	// test file reading
 	path := filepath.Join("testdata", "omartest.txt")
 	file,_ := os.Open(path)
 	reader = bufio.NewScanner(file)
