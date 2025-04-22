@@ -99,7 +99,7 @@ func process(patients map[string]History) {
 		procedures := len(history.procedures)
 		duration := history.out.Sub(history.in)
 		hours := int(duration.Hours())
-		minutes := float64(duration / time.Minute) - float64(hours * 60)
+		minutes := float64(duration/time.Minute) - float64(hours*60)
 		output := fmt.Sprintf("Patient %s stayed for %d.0 hours and %.1f minutes and received %d treatments", patient, hours, minutes, procedures)
 		fmt.Println(output)
 	}
