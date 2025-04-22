@@ -43,6 +43,13 @@ func main() {
 		scanner = bufio.NewScanner(os.Stdin)
 	}
 
+	patients := scanInput(scanner)
+
+	// do our output prints
+	process(patients, *upgradePtr)
+}
+
+func scanInput(scanner *bufio.Scanner) map[string]History {
 	patients := make(map[string]History)
 	for scanner.Scan() {
 		chunks := strings.Split(scanner.Text(), " ")
@@ -82,8 +89,7 @@ func main() {
 	if scanner.Err() != nil {
 		panic(scanner.Err())
 	}
-	// do our output prints
-	process(patients, *upgradePtr)
+	return patients
 }
 
 func parseTime(input string) time.Time {
