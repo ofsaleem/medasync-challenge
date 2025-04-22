@@ -97,7 +97,9 @@ func process(patients map[string]History, upgrade bool) {
 		if !upgrade {
 			hours := int(duration.Hours())
 			minutes := float64(duration/time.Minute) - float64(hours*60)
-			output += fmt.Sprintf("%d.0 hours and %.1f minutes and received %d treatments", hours, minutes, procedures)
+			output += fmt.Sprintf(
+				"%d.0 hours and %.1f minutes and received %d treatments", hours, minutes, procedures,
+			)
 		} else {
 			output += parseDur(duration)
 			if procedures == 1 {
