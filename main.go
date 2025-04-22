@@ -89,7 +89,11 @@ func process(patients map[string]History) {
 		duration := history.out.Sub(history.in)
 		output := "Patient " + patient + " stayed for "
 		output += parseDur(duration)
-		output += fmt.Sprintf(" and had %d procedures.", procedures)
+		if procedures == 1 {
+			output += fmt.Sprintf(" and had 1 procedure.")
+		} else {
+			output += fmt.Sprintf(" and had %d procedures.", procedures)
+		}
 		fmt.Println(output)
 	}
 }
@@ -119,24 +123,45 @@ func parseDur(duration time.Duration) string {
 		remainder %= secondsInAMinute
 	}
 	output := []string{}
+	str := ""
 	if years > 0 {
-		str := fmt.Sprintf("%d years", years)
+		if years == 1 {
+			str = fmt.Sprintf("1 year")
+		} else {
+			str = fmt.Sprintf("%d years", years)
+		}
 		output = append(output, str)
 	}
 	if days > 0 {
-		str := fmt.Sprintf("%d days", days)
+		if days == 1 {
+			str = fmt.Sprintf("1 day")
+		} else {
+			str = fmt.Sprintf("%d days", days)
+		}
 		output = append(output, str)
 	}
 	if hours > 0 {
-		str := fmt.Sprintf("%d hours", hours)
+		if hours == 1 {
+			str = fmt.Sprintf("1 hour")
+		} else {
+			str = fmt.Sprintf("%d hours", hours)
+		}
 		output = append(output, str)
 	}
 	if minutes > 0 {
-		str := fmt.Sprintf("%d minutes", minutes)
+		if minutes == 1 {
+			str = fmt.Sprintf("1 minute")
+		} else {
+			str = fmt.Sprintf("%d minutes", minutes)
+		}
 		output = append(output, str)
 	}
 	if remainder > 0 {
-		str := fmt.Sprintf("%d seconds", remainder)
+		if remainder == 1 {
+			str = fmt.Sprintf("1 second")
+		} else {
+			str = fmt.Sprintf("%d seconds", remainder)
+		}
 		output = append(output, str)
 	}
 	if len(output) == 0 {
