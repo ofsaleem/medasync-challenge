@@ -1,1 +1,1 @@
-Patient John stayed for 2077.0 hours and 27.0 minutes and received 1 treatment.
+Patient John stayed for 2077.0 hours and 27.0 minutes and received 1 treatments
