@@ -36,6 +36,12 @@ To run the unit tests I wrote (in `main_test.go`) run `go test` .
 
 To run the end to end (from file parsing to output) tests, make sure `e2e.sh` has execution permissions and run it with `./e2e.sh` . This script generates program output based on input files living in the `testdata` folder, and `diff`s it with the answer files I have also living there. You can add your own if you like, incrementally named matching `testN.txt` and `answersN.txt` can be put in the `testdata` folder and the script will automatically run them. Be careful of extra newlines and trailing spaces in your answers files if you do this, otherwise the test will fail and the output will be hard to discern (can't highlight a space, after all).
 
+#### Test Files
+1. Test if `Discharge` before `Intake` works
+1. Make sure only unique treatments are counted
+1. Make sure multiple patients directives can be mixed together without issue (`Patient` exempted)
+1. Make sure seconds are handled properly as `example_patients.txt` doesn't test them
+
 ## Design
 For programming convenience and performance I opted to store patient data in a `map` with the patient name as the key and a custom `History` struct as the value. This lets me quickly and consistently perform writes and lookups to patient data, regardless of the order I receive the information. The patient's treatment history is also stored in a `map` so that I can quickly count only unique treatments.
 
