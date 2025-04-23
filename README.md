@@ -46,3 +46,7 @@ By default the program tries to match the output style in the problem statement:
 Patient John stayed for 222.0 hours and 13.0 minutes and received 4 treatments
 ```
 I add the `.0` to the hours statically in the print statement, because it will always be an integer result since we break out the minutes. I made an assumption that we only wanted to preserve one decimal place for the minutes, so there will be some rounding involved if there are any stays that involve seconds. These results are achieved using Go's `time` standard library, which calculates a duration for me and I do some fun math to get the remainders in minutes and then in seconds.
+#### --upgrade
+When the `--upgrade` flag is present, the output is handled by a different function that does more calculations and handles grammar as well. This function supports years, days, and seconds as well as the original hours and minutes required. It distinguishes between singular and plural values (`1 treatment` and `1 hour` v. `1 treatments` and `1 hours`) and will not print 0 values (`1 year and 1 hour` rather than `1 year, 0 days, and 1 hour`). It also joins clauses following English grammar rules, including providing an oxford comma. This function also adds a period at the end of the sentence. Fun!
+
+## Assumptions
