@@ -10,13 +10,19 @@ The program supports a couple flags:
 
 `--upgrade` to give more granular time calculations (e.g. years, days) and provide slightly prettier output.
 
-```./medasync-challenge -f example_patients.txt --upgrade```
+```
+./medasync-challenge -f example_patients.txt --upgrade
+```
 
-```go run main.go -f example_patients.txt --upgrade```
+```
+go run main.go -f example_patients.txt --upgrade
+```
 
 Be sure to enable executable permissions on the binary.
 
 Both flags are optional. If `-f` is not provided, the program will read from Standard Input, so you can pipe to it if you'd like:
 
-```cat example_patients.txt | ./medasync-challenge --upgrade```
+```
+cat example_patients.txt | ./medasync-challenge --upgrade
+```
 
