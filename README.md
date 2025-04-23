@@ -62,6 +62,7 @@ Most important assumptions I make are those provided in the problem statement
 * Every patient should have both an Intake and Discharge
 * The Discharge date and time should always be after the Intake date and time
 * Every patient should have at least one treatment
+
 Others:
 * All input provided will be correct, or behavior of the program is not guaranteed
 * Patients have more-or-less human lifespans
