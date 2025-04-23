@@ -1,4 +1,4 @@
-package medasyncchallenge
+package main 
 
 import (
 	"bufio"
