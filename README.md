@@ -70,6 +70,7 @@ Others:
 * I can ignore input that doesn't match expected format. So if a line doesn't start with `Patient` or `Action`, or the `Action` isn't one of the ones we expect, the program ignores the line completely.
 * Data on the same line is separated by spaces and not tabs
 * No different patients have the same name
+* Timestamps on `Treatment` lines can be ignored, since the problem statement doesn't mention tracking these at all.
 
 ## Limitations / Room for Improvement
 * I could leverage a custom struct and maybe some more `time` functions for the upgraded calculations to make that section of the code prettier or shorter, but I opted not to since that section is out of scope of the problem anyway
