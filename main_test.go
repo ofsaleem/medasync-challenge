@@ -7,6 +7,7 @@ import (
 	"strings"
 	"testing"
 	"time"
+	"fmt"
 )
 
 func TestScanInput(t *testing.T) {
@@ -68,4 +69,38 @@ Action Treatment Omar 2020-11-11T11:11:11Z ZZZZ`
 		}
 	}
 	file.Close()
+}
+
+func TestParseDur(t *testing.T) {
+	layout := "2006-01-02T15:04:05Z"
+in,_ := time.Parse(layout, "2000-01-01T10:00:00Z")
+	timeSugar := func (layout string, input string) time.Time {
+		out, _ := time.Parse(layout, input)
+		return out
+	}
+	var tests = []struct {
+		in, out time.Time
+		want string
+	}{
+			{in, timeSugar(layout, "2000-01-01T11:00:00Z"), "1 hour"},
+			{in, timeSugar(layout, "2000-01-01T11:01:00Z"), "1 hour and 1 minute"},
+			{in, timeSugar(layout, "2000-01-01T11:01:01Z"), "1 hour, 1 minute, and 1 second"},
+			{in, timeSugar(layout, "2001-01-01T10:00:00Z"), "1 year"},
+			{in, timeSugar(layout, "2001-01-02T10:00:00Z"), "1 year and 1 day"},
+			{in, timeSugar(layout, "2001-01-02T11:00:00Z"), "1 year, 1 day, and 1 hour"},
+			{in, timeSugar(layout, "2001-01-01T11:00:01Z"), "1 year, 1 hour, and 1 second"},
+			{in, timeSugar(layout, "2002-01-02T12:02:02Z"), "2 years, 2 hours, 2 minutes, and 2 seconds"},
+			{in, timeSugar(layout, "2025-04-22T22:18:35Z"), "25 years, 118 days, 12 hours, 18 minutes, and 35 seconds"},
+		}
+
+	for _, tt := range tests {
+		testName := fmt.Sprintf("%s - %s", tt.in, tt.out)
+		t.Run(testName, func(t *testing.T) {
+			duration := tt.out.Sub(tt.in)
+			gotAnswer := parseDur(duration)
+			if gotAnswer != tt.want {
+				t.Errorf("expected %s, got %s", tt.want, gotAnswer)
+			}
+		})
+	}
 }
