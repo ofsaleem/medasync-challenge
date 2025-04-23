@@ -29,7 +29,7 @@ Both flags are optional. If `-f` is not provided, the program will read from Sta
 cat example_patients.txt | ./medasync-challenge --upgrade
 ```
 
-The program does not support multiple file inputs.
+The program does not support reading multiple files with the `-f` flag, but you can pipe multiple in at once.
 
 ### Testing
 To run the unit tests I wrote (in `main_test.go`) run `go test` .
@@ -68,6 +68,7 @@ Others:
     * Go's `time` library only supports durations of about 290 years
 * I can ignore input that doesn't match expected format. So if a line doesn't start with `Patient` or `Action`, or the `Action` isn't one of the ones we expect, the program ignores the line completely.
 * Data on the same line is separated by spaces and not tabs
+* No different patients have the same name
 
 ## Limitations / Room for Improvement
 * I could leverage a custom struct and maybe some more `time` functions for the upgraded calculations to make that section of the code prettier or shorter, but I opted not to since that section is out of scope of the problem anyway
@@ -77,3 +78,5 @@ Others:
 * The `e2e.sh` script does not delete the incrementally named `outN.txt` files it generates during testing.
 * There's no safety around input size, so providing a large enough input could definitely crash the program.
 * The program only supports one file being provided at a time, if you want to read multiple files you could `cat` them all and pipe them into the binary.
+* Data provided for patients with the same name will overwrite. So if you issue `Intake` twice for John, it will replace the first timestamp with the new one. This means you can't have two different patients named John and expect to get separate output for them. This does mean however there's an amount of idempotency provided by the program; if your input file accidentally includes the **same** data multiple times you will stil get accurate outputs
+* Program does not rely on external memory at all so each time you run the program it's fresh.
