@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -20,7 +21,10 @@ func main() {
 	// flag handling
 	upgradePtr := flag.Bool("upgrade", false, "output with more, prettier, detail")
 	fileNamePtr := flag.String("f", "", "file path to read")
+	costNamePtr := flag.String("c", "", "cost file path to read")
 	fileProvided := false
+	costProvided := false
+	var costMap map[string]int
 	var scanner *bufio.Scanner
 	flag.Parse()
 	flag.Visit(func(f *flag.Flag) {
@@ -31,7 +35,25 @@ func main() {
 			}
 			fileProvided = true
 		}
+		if f.Name == "c" {
+			if *costNamePtr == "" {
+				fmt.Println("Error: provide cost filename")
+				os.Exit(1)
+			}
+			costProvided = true
+		}
 	})
+
+	var costScanner *bufio.Scanner
+	if costProvided {
+		costFile, err := os.Open(*costNamePtr)
+		if err != nil {
+			panic(err)
+		}
+		costScanner = bufio.NewScanner(costFile)
+		costMap = scanCost(costScanner)
+		defer costFile.Close()
+	}
 
 	if fileProvided {
 		// try to open file
@@ -50,7 +72,27 @@ func main() {
 	patients := scanInput(scanner)
 
 	// do our output prints
-	process(patients, *upgradePtr)
+	process(patients, costMap, *upgradePtr)
+}
+
+func scanCost(scanner *bufio.Scanner) map[string]int {
+	costMap := make(map[string]int)
+	for scanner.Scan() {
+		chunks := strings.Split(scanner.Text(), " ")
+		costMap[chunks[0]], _ = strconv.Atoi(chunks[1])
+	}
+	if scanner.Err() != nil {
+		panic(scanner.Err())
+	}
+	return costMap
+}
+
+func calculateCost(procedures map[string]int, costMap map[string]int) int {
+	total := 0
+	for proc, times := range procedures {
+		total += costMap[proc] * times
+	}
+	return total
 }
 
 func scanInput(scanner *bufio.Scanner) map[string]History {
@@ -109,7 +151,7 @@ func parseTime(input string) time.Time {
 	return out
 }
 
-func process(patients map[string]History, upgrade bool) {
+func process(patients map[string]History, costMap map[string]int, upgrade bool) {
 	for patient, history := range patients {
 		// since we used a map for treatment codes, this len() is the
 		// number of unique treatments
@@ -124,17 +166,18 @@ func process(patients map[string]History, upgrade bool) {
 			// for some reason we lose seconds with above calculation so we have to re-add them
 			minutes += float64(duration/time.Second-(duration/time.Minute*60)) / 60
 			output += fmt.Sprintf(
-				"%d.0 hours and %.1f minutes and received %d treatments", hours, minutes, procedures,
+				"%d.0 hours and %.1f minutes and received %d treatments,", hours, minutes, procedures,
 			)
 		} else {
 			// if --upgrade is present, hand it over to advanced calc/print
 			output += parseDur(duration)
 			if procedures == 1 {
-				output += fmt.Sprintf(" and received 1 treatment.")
+				output += fmt.Sprintf(" and received 1 treatment,")
 			} else {
-				output += fmt.Sprintf(" and received %d treatments.", procedures)
+				output += fmt.Sprintf(" and received %d treatments,", procedures)
 			}
 		}
+		output += fmt.Sprintf(" which cost a total of $%d.", calculateCost(history.procedures, costMap))
 		fmt.Println(output)
 	}
 }
