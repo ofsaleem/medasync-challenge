@@ -17,6 +17,11 @@ type History struct {
 	procedures map[string]int
 }
 
+type ProcedureCount struct {
+	procedure string
+	count     int
+}
+
 func main() {
 	// flag handling
 	upgradePtr := flag.Bool("upgrade", false, "output with more, prettier, detail")
@@ -95,6 +100,14 @@ func calculateCost(procedures map[string]int, costMap map[string]int) int {
 	return total
 }
 
+func countProcedures(procedures map[string]int) map[string]int {
+	var totalProcedures map[string]int
+	for proc, times := range procedures {
+		totalProcedures[proc] += times
+	}
+	return totalProcedures
+}
+
 func scanInput(scanner *bufio.Scanner) map[string]History {
 	patients := make(map[string]History)
 	// loop over each line of the input
@@ -152,6 +165,7 @@ func parseTime(input string) time.Time {
 }
 
 func process(patients map[string]History, costMap map[string]int, upgrade bool) {
+	var totalProcedures map[string]int
 	for patient, history := range patients {
 		// since we used a map for treatment codes, this len() is the
 		// number of unique treatments
@@ -179,7 +193,17 @@ func process(patients map[string]History, costMap map[string]int, upgrade bool) 
 		}
 		output += fmt.Sprintf(" which cost a total of $%d.", calculateCost(history.procedures, costMap))
 		fmt.Println(output)
+		totalProcedures = countProcedures(history.procedures)
 	}
+	common := ProcedureCount{}
+	for proc, times := range totalProcedures {
+		if times > common.count {
+			common.count = times
+			common.procedure = proc
+		}
+	}
+	output := fmt.Sprintf(" The most common procedure was %s, which was undergone %d times.", common.procedure, common.count)
+	fmt.Println(output)
 }
 
 func parseDur(duration time.Duration) string {
