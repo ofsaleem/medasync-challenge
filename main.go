@@ -101,7 +101,7 @@ func calculateCost(procedures map[string]int, costMap map[string]int) int {
 }
 
 func countProcedures(procedures map[string]int) map[string]int {
-	var totalProcedures map[string]int
+	totalProcedures := make(map[string]int)
 	for proc, times := range procedures {
 		totalProcedures[proc] += times
 	}
