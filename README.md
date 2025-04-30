@@ -1,6 +1,9 @@
 # MedaSync Engineering Challenge
 This repository represents my work to complete the MedaSync engineering challenge. I've chosen to write my program in Go, with an additional Bash script used for certain tests.
 
+# ERROR IN PROGRAM 
+In the course of my recent interview I was asked to count the number of procedures undergone by all patients and provide the most common procedure. I realized immediately after the interview that I erroneously coded this logic. In my processing function I was returning the entire map on a per-patient level which meant my final count was only going to count the last patient's procedures instead of all of them. 
+
 ## Usage
 Use the included binary `medasync-challenge` to run the program, or `go run main.go` in its place will also work.
 
